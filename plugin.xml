@@ -1,26 +1,26 @@
 <?xml version='1.0' encoding='utf-8'?>
 <plugin id="cordova-plugin-firstlove" version="0.0.1"
-        xmlns="http://apache.org/cordova/ns/plugins/1.0"
-        xmlns:android="http://schemas.android.com/apk/res/android">
-    <name>First Love</name>
+  xmlns="http://apache.org/cordova/ns/plugins/1.0"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  <name>First Love</name>
+  <js-module name="firstlove" src="www/firstlove.js">
+    <clobbers target="firstlove" />
+  </js-module>
+  <platform name="ios">
+    <config-file target="config.xml" parent="/*">
+      <feature name="firstlove">
+        <param name="ios-package" value="firstlove" />
+        <param name="onload" value="true" />
+      </feature>
+    </config-file>
+    <source-file src="src/ios/firstlove.swift" />
+    <hook type="before_plugin_install" src="hooks/npmInstall.js" />
+    <hook type="before_plugin_install" src="hooks/iosCopyShareExtension.js" />
+    <hook type="after_plugin_add" src="hooks/iosAddTarget.js" />
+    <hook type="before_plugin_uninstall" src="hooks/iosRemoveTarget.js" />
 
-    <js-module name="firstlove" src="www/firstlove.js">
-        <clobbers target="firstlove" />
-    </js-module>
-
-    <platform name="ios">
-        <config-file target="config.xml" parent="/*">
-
-            <feature name="firstlove">
-                <param name="ios-package" value="firstlove" />
-            </feature>
-
-        </config-file>
-
-        <!-- Add in the plugin .swift files here -->
-        <source-file src="src/ios/firstlove.swift" />
-
-        <!-- Add in the swift-support plugin by default -->
-        <dependency id="cordova-plugin-add-swift-support" version="1.7.2"/>
-    </platform>
+    <framework src="MobileCoreServices.framework" />
+    <framework src="UIKit.framework" />
+    <dependency id="cordova-plugin-add-swift-support" version="2.0.2"/>
+  </platform>
 </plugin>

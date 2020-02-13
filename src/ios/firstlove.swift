@@ -1,32 +1,25 @@
-/*
-* Notes: The @objc shows that this class & function should be exposed to Cordova.
-*/
-@objc(firstlove) class firstlove : CDVPlugin {
-  @objc(yeah:) // Declare your function name.
-  func yeah(command: CDVInvokedUrlCommand) { // write the function code.
-    /*
-     * Always assume that the plugin will fail.
-     * Even if in this example, it can't.
-     */
-    // Set the plugin result to fail.
-    var pluginResult = CDVPluginResult (status: CDVCommandStatus_ERROR, messageAs: "The Plugin Failed");
-    // Set the plugin result to succeed.
-        pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: "The plugin succeeded");
-    // Send the function result back to Cordova.
-    self.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
-  }
+@objc(firstlove) class firstlove: CDVPlugin {
+    var _command: CDVInvokedUrlCommand?
 
-  @objc(test:) // Declare your function name.
-  func test(command: CDVInvokedUrlCommand) { // write the function code.
-    /*
-     * Always assume that the plugin will fail.
-     * Even if in this example, it can't.
-     */
-    // Set the plugin result to fail.
-    var pluginResult = CDVPluginResult (status: CDVCommandStatus_ERROR, messageAs: "The Plugin Failed");
-    // Set the plugin result to succeed.
-        pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: "The plugin succeeded");
-    // Send the function result back to Cordova.
-    self.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
-  }
+    override func pluginInitialize() {
+        super.pluginInitialize()
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(sendUrls),
+            name: NSNotification.Name("CDVPluginHandleOpenURLNotification"),
+            object: nil
+        )
+    }
+
+    @objc func sendUrls() {
+        let userDefaults = UserDefaults(suiteName: "group.com.idibwofa6eg9w4.bk46f44qira.share")!
+        let urls = userDefaults.array(forKey: "urls")
+        let result = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: urls)
+        result!.keepCallback = true
+        self.commandDelegate.send(result, callbackId: _command!.callbackId!)
+    }
+
+    @objc(onFiles:) func onFiles(command: CDVInvokedUrlCommand) {
+        self._command = command
+    }
 }
